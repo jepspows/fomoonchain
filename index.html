@@ -28,7 +28,7 @@
 
   /* ----- letterhead (top right) ----- */
   .letterhead {
-    text-align: right;
+    text-align: left;
     margin-bottom: 40px;
     transform: rotate(1deg);
   }
@@ -37,16 +37,11 @@
     display: inline-flex;
     align-items: center;
     gap: 14px;
-  }
-
-  .letterhead-logo {
-    width: 64px;
-    height: 64px;
-    object-fit: cover;
+    flex-direction: row-reverse;
   }
 
   .letterhead-text {
-    text-align: right;
+    text-align: left;
   }
 
   .letterhead-name {
@@ -72,7 +67,7 @@
 
   /* ----- date ----- */
   .date {
-    text-align: right;
+    text-align: left;
     font-family: 'Schoolbell', cursive;
     font-size: 0.9rem;
     opacity: 0.5;
