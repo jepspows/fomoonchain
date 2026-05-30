@@ -1,0 +1,277 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<style>
+* { margin: 0; padding: 0; box-sizing: border-box; }
+
+body {
+  width: 1200px;
+  height: 1800px;
+  background: #f5f0e8;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: 'Georgia', 'Times New Roman', serif;
+  overflow: hidden;
+}
+
+.paper {
+  width: 960px;
+  background: #fefcf7;
+  padding: 80px 90px;
+  position: relative;
+  box-shadow:
+    2px 2px 8px rgba(0,0,0,0.06),
+    4px 4px 16px rgba(0,0,0,0.04),
+    0 0 0 1px rgba(0,0,0,0.03);
+  transform: rotate(-0.2deg);
+}
+
+/* Subtle paper lines */
+.paper::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 0; right: 0; bottom: 0;
+  background: repeating-linear-gradient(
+    to bottom,
+    transparent,
+    transparent 27px,
+    #e8e4db 27px,
+    #e8e4db 28px
+  );
+  pointer-events: none;
+  opacity: 0.4;
+}
+
+/* Coffee stain */
+.stain {
+  position: absolute;
+  width: 120px;
+  height: 120px;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(139,119,90,0.12) 0%, rgba(139,119,90,0.04) 50%, transparent 70%);
+  right: 60px;
+  bottom: 100px;
+  pointer-events: none;
+}
+
+.letterhead {
+  position: relative;
+  z-index: 1;
+  margin-bottom: 40px;
+}
+
+.logo-line {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  margin-bottom: 6px;
+}
+
+.logo-box {
+  width: 72px;
+  height: 72px;
+  background: #fafafa;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 2.2rem;
+  font-family: 'Schoolbell', 'Comic Sans MS', cursive;
+  color: #333;
+  transform: rotate(-2deg);
+}
+
+.brand-name {
+  font-family: 'Schoolbell', 'Comic Sans MS', cursive;
+  font-size: 2.4rem;
+  color: #111;
+  letter-spacing: 3px;
+  line-height: 1.1;
+}
+
+.brand-name .f { display: inline-block; transform: rotate(-3deg); }
+.brand-name .o1 { display: inline-block; transform: rotate(2deg); font-size: 0.9em; }
+.brand-name .m { display: inline-block; transform: rotate(-1deg); }
+.brand-name .o2 { display: inline-block; transform: rotate(3deg); font-size: 0.85em; }
+
+.subtitle {
+  font-family: 'Schoolbell', 'Comic Sans MS', cursive;
+  font-size: 1rem;
+  color: #999;
+  text-decoration: line-through;
+  margin-left: 88px;
+}
+
+.date {
+  font-family: 'Schoolbell', 'Comic Sans MS', cursive;
+  font-size: 1rem;
+  color: #999;
+  margin-bottom: 30px;
+  text-align: right;
+  transform: rotate(0.4deg);
+}
+
+.salutation {
+  font-family: 'Schoolbell', 'Comic Sans MS', cursive;
+  font-size: 2rem;
+  color: #111;
+  margin-bottom: 30px;
+  transform: rotate(-0.3deg);
+}
+
+.body {
+  position: relative;
+  z-index: 1;
+  font-size: 1.15rem;
+  line-height: 28px;
+  color: #222;
+  transform: rotate(-0.15deg);
+}
+
+.body p {
+  margin-bottom: 22px;
+  text-indent: 24px;
+}
+
+.body p.no-indent {
+  text-indent: 0;
+}
+
+.body .highlight {
+  background: rgba(255, 255, 120, 0.35);
+  padding: 1px 4px;
+}
+
+.body .crossed {
+  text-decoration: line-through;
+  color: #c44;
+}
+
+.closing {
+  font-family: 'Schoolbell', 'Comic Sans MS', cursive;
+  font-size: 2rem;
+  color: #111;
+  margin-top: 30px;
+  transform: rotate(-0.5deg);
+  position: relative;
+  z-index: 1;
+}
+
+.signature {
+  font-family: 'Schoolbell', 'Comic Sans MS', cursive;
+  font-size: 3rem;
+  color: #111;
+  transform: rotate(-2.5deg);
+  margin-bottom: 20px;
+  position: relative;
+  z-index: 1;
+}
+
+.ps {
+  font-size: 1rem;
+  color: #888;
+  line-height: 28px;
+  transform: rotate(0.2deg);
+  position: relative;
+  z-index: 1;
+}
+
+.ps strong {
+  text-transform: uppercase;
+  font-size: 0.9rem;
+  letter-spacing: 1px;
+}
+
+.divider {
+  text-align: center;
+  font-size: 1.1rem;
+  color: #ccc;
+  letter-spacing: 8px;
+  margin: 8px 0;
+  position: relative;
+  z-index: 1;
+}
+</style>
+</head>
+<body>
+
+<div class="paper">
+  <div class="stain"></div>
+
+  <div class="letterhead">
+    <div class="logo-line">
+      <div class="logo-box">:)</div>
+      <div class="brand-name">
+        <span class="f">F</span>ear
+        <span class="o1">O</span>f
+        <span class="m">M</span>issing
+        <span class="o2">O</span>utline
+      </div>
+    </div>
+    <div class="subtitle">(yes it spells FOMO)</div>
+  </div>
+
+  <div class="date">some tuesday afternoon, 2026</div>
+
+  <div class="salutation">dear collector,</div>
+
+  <div class="body">
+    <p>
+      you probably thought FOMO stood for <span class="crossed">fear of missing out</span>. so did everyone else. but that changed on a rainy tuesday when a kid got bored and changed everything.
+    </p>
+
+    <p>
+      the ipad was dead. the tv remote was missing. the colored markers had all dried up or rolled under the couch. there was nothing left but a <span class="highlight">single black marker</span> and a stack of printer paper from dad's office.
+    </p>
+
+    <p>
+      so the kid drew.
+    </p>
+
+    <p>
+      a round head. two dots for eyes. no mouth. arms coming straight out of the head like some kind of potato with limbs. the proportions made no sense. the lines were wobbly. the marker squeaked the whole time.
+    </p>
+
+    <p>
+      the dad walked by, looked at it, and said <em>"that's actually kind of fire."</em>
+    </p>
+
+    <p>
+      and that was it. the kid kept drawing.
+    </p>
+
+    <p>
+      next day: another one. day after that: two more. a week later there was a stack of 50 on the kitchen table. then 100. then the dad had an idea that was <span class="highlight">either brilliant or very stupid</span> -- put them on the blockchain.
+    </p>
+
+    <p>
+      no AI. no filters. no copy-paste. every single one of the <strong>10,000 characters</strong> is drawn from scratch by a real human child with a real dried-out marker on real printer paper. some have no mouths because the kid forgot. some have one giant eye and one tiny one because the kid thought it was funny. some have arms coming out of places arms should not come out of.
+    </p>
+
+    <p>
+      the rules were simple: <strong>black marker only, no erasing, mistakes ship as-is.</strong> if the marker ran out mid-drawing, the drawing shipped with half a face. mouths were optional and mostly forgotten. eyes could be different sizes -- that's character, not a bug.
+    </p>
+
+    <p>
+      this is not a 0.5 ETH mint with a 47-item roadmap ending in "metaverse integration." this is <strong>0.001 ETH</strong>. this is a kid's drawings on ethereum. that's it. that's the whole thing.
+    </p>
+
+    <p class="no-indent">
+      it's called <strong>Fear Of Missing Outline</strong> because every outline is a little "off" -- and that's exactly what makes it beautiful.
+    </p>
+  </div>
+
+  <div class="closing">sincerely,</div>
+  <div class="signature">the kid</div>
+
+  <div class="divider">--- * ---</div>
+
+  <div class="ps">
+    <strong>p.s. -- not financial advice.</strong> these are drawings by a child. do not expect to get rich. do not mortgage your house. do not sell your dog. if you lose money on this, your mom was right -- you should've just stayed in school. this is art. this is fun. this is definitely not a financial instrument. seriously. <strong>not financial advice.</strong>
+  </div>
+
+</div>
+
+</body>
+</html>

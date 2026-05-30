@@ -1,0 +1,56 @@
+{
+  "name": "Fear Of Missing Outline #3300",
+  "description": "Hand-drawn grayscale character art. Red Eyes, Elf Ears, Dwarf Ears, and Demon Ears are the rarest traits.",
+  "image": "ipfs://CID/3300.png",
+  "attributes": [
+    {
+      "trait_type": "Background",
+      "value": "Sun"
+    },
+    {
+      "trait_type": "Head",
+      "value": "Head 2"
+    },
+    {
+      "trait_type": "Shoulders",
+      "value": "Shoulders 2"
+    },
+    {
+      "trait_type": "Ears",
+      "value": "Human Ears"
+    },
+    {
+      "trait_type": "Hair",
+      "value": "Hair 3"
+    },
+    {
+      "trait_type": "Eyes",
+      "value": "Eyes 3"
+    },
+    {
+      "trait_type": "Nose",
+      "value": "Nose 1"
+    },
+    {
+      "trait_type": "Lips",
+      "value": "Lips 7"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "3300.png",
+        "type": "image/png"
+      }
+    ],
+    "category": "image",
+    "creators": [
+      {
+        "address": "YOUR_WALLET_ADDRESS",
+        "share": 100
+      }
+    ]
+  },
+  "rarity_score": 14.3,
+  "rarity_tier": "Common"
+}

@@ -1,0 +1,74 @@
+[
+  {
+    "id": 2924,
+    "tier": "Common",
+    "score": 13.0,
+    "eyes": "Eyes 9",
+    "hair": "Hair 1",
+    "bg": "Butterflies",
+    "ears": "Human Ears"
+  },
+  {
+    "id": 8949,
+    "tier": "Uncommon",
+    "score": 19.9,
+    "eyes": "Eyes 7",
+    "hair": "Hair 1",
+    "bg": "Clouds",
+    "ears": "Human Ears"
+  },
+  {
+    "id": 4756,
+    "tier": "Uncommon",
+    "score": 20.2,
+    "eyes": "Eyes 5",
+    "hair": "Hair 8",
+    "bg": "House",
+    "ears": "Human Ears"
+  },
+  {
+    "id": 9966,
+    "tier": "Common",
+    "score": 14.5,
+    "eyes": "Eyes 1",
+    "hair": "Hair 2",
+    "bg": "Moon",
+    "ears": "Human Ears"
+  },
+  {
+    "id": 4517,
+    "tier": "Common",
+    "score": 15.5,
+    "eyes": "Eyes 5",
+    "hair": "Hair 7",
+    "bg": "Moon",
+    "ears": "Superhuman Ears"
+  },
+  {
+    "id": 3810,
+    "tier": "Uncommon",
+    "score": 17.6,
+    "eyes": "Eyes 3",
+    "hair": "Hair 9",
+    "bg": "cars",
+    "ears": "Superhuman Ears"
+  },
+  {
+    "id": 3740,
+    "tier": "Legendary",
+    "score": 32.9,
+    "eyes": "Eyes 1",
+    "hair": "Hair 5",
+    "bg": "Sun",
+    "ears": "Dwarf Ears"
+  },
+  {
+    "id": 8838,
+    "tier": "Rare",
+    "score": 21.5,
+    "eyes": "Eyes 3",
+    "hair": "Hair 3",
+    "bg": "Thunder",
+    "ears": "Superhuman Ears"
+  }
+]
