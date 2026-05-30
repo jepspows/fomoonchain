@@ -160,6 +160,21 @@
 
   .wl-inline button:hover { box-shadow: 1px 1px 0 #111; transform: translate(2px, 2px); }
 
+  .wl-btn {
+    font-family: 'Schoolbell', cursive; font-size: 0.9rem;
+    background: #fff; padding: 10px 16px; cursor: pointer;
+    box-shadow: 3px 3px 0 #111; transition: all 0.15s; color: #111;
+  }
+  .wl-btn:hover { box-shadow: 1px 1px 0 #111; transform: translate(2px, 2px); }
+  .tweet-btn { background: #111; color: #fff; box-shadow: 3px 3px 0 #555; }
+  .tweet-btn:hover { box-shadow: 1px 1px 0 #555; }
+  .submit-btn { background: #1a7a1a; color: #fff; box-shadow: 3px 3px 0 #0d3d0d; }
+  .submit-btn:hover { box-shadow: 1px 1px 0 #0d3d0d; }
+  .check-btn { background: #fff; color: #111; }
+  .export-btn { background: #fff; color: #111; margin-right: 6px; }
+  .clear-btn { background: #c44; color: #fff; box-shadow: 3px 3px 0 #822; }
+  .clear-btn:hover { box-shadow: 1px 1px 0 #822; }
+
   .wl-msg { font-size: 1rem; min-height: 20px; margin-bottom: 18px; }
   .wl-msg.yes { color: #1a7a1a; }
   .wl-msg.no { color: #c44; }
@@ -285,12 +300,38 @@
     </button>
   </div>
 
-  <p class="body-heading">check if you're on the list:</p>
+  <p class="body-heading">get whitelisted:</p>
+  <p class="body-text" style="margin-bottom:8px;">
+    <strong>step 1 —</strong> follow <a href="https://x.com/fomoonchain">@fomoonchain</a> on twitter<br>
+    <strong>step 2 —</strong> tweet about us (click the button below)<br>
+    <strong>step 3 —</strong> paste your tweet link + wallet below
+  </p>
+
+  <div class="wl-inline" style="margin-bottom:6px;">
+    <button class="wl-btn tweet-btn" onclick="openTweet()">
+      post tweet &rarr;
+    </button>
+  </div>
+
   <div class="wl-inline">
-    <input type="text" id="wlAddress" placeholder="your wallet address...">
-    <button onclick="checkWhitelist()">check</button>
+    <input type="text" id="wlWallet" placeholder="your wallet address (0x...)">
+    <input type="text" id="wlTweet" placeholder="your tweet url (https://x.com/...)">
+  </div>
+  <div class="wl-inline">
+    <button class="wl-btn submit-btn" onclick="submitWhitelist()">submit for whitelist</button>
+    <button class="wl-btn check-btn" onclick="checkMyStatus()">check my status</button>
   </div>
   <div class="wl-msg" id="wlResult"></div>
+
+  <div id="wlAdmin" style="display:none;margin-top:18px;border-top:1px dashed #ccc;padding-top:10px;">
+    <p class="body-heading" style="font-size:1.2rem;">admin panel</p>
+    <p style="font-size:0.8rem;opacity:0.6;margin-bottom:8px;">
+      <span id="wlCount">0</span> whitelist entries
+    </p>
+    <button class="wl-btn export-btn" onclick="exportWhitelist()">export as JSON</button>
+    <button class="wl-btn clear-btn" onclick="clearWhitelist()">clear all</button>
+    <pre id="wlExport" style="display:none;font-size:0.65rem;max-height:200px;overflow:auto;background:#f9f9f9;padding:8px;margin-top:8px;"></pre>
+  </div>
 
   <p class="body-heading">the plan:</p>
   <p class="body-text">
@@ -404,37 +445,149 @@ function shuffleSneak() {
   }, 200);
 }
 
-// --- Whitelist ---
-var whitelist = [
-  "0x1234567890abcdef1234567890abcdef12345678",
-  "0xabcdef1234567890abcdef1234567890abcdef12",
-  "0xdead00000000000000000000000000000000beef",
-  "vitalik.eth",
-  "beeple.eth"
-];
+// --- Whitelist Registration ---
+var WL_KEY = 'fomo_whitelist_v1';
+var ADMIN_PASSWORD = 'fomo420';
 
-function checkWhitelist() {
-  var input = document.getElementById("wlAddress").value.trim().toLowerCase();
-  var result = document.getElementById("wlResult");
-  result.className = "wl-msg";
+function getWhitelist() {
+  try {
+    return JSON.parse(localStorage.getItem(WL_KEY)) || [];
+  } catch(e) { return []; }
+}
 
-  if (!input) {
-    result.textContent = "type something first...";
+function saveWhitelist(list) {
+  localStorage.setItem(WL_KEY, JSON.stringify(list));
+}
+
+function openTweet() {
+  var text = encodeURIComponent(
+    'just applied for the @fomoonchain whitelist \uD83D\uDC49\uD83C\uDFFC\uD83D\uDC48\uD83C\uDFFC\n\n' +
+    'Fear Of Missing Outline \u2014 10,000 hand-drawn characters. ' +
+    'one black marker. no erasers. pure kid energy.\n\n' +
+    'fomoonchain.xyz'
+  );
+  window.open('https://twitter.com/intent/tweet?text=' + text, '_blank');
+}
+
+function submitWhitelist() {
+  var wallet = document.getElementById('wlWallet').value.trim();
+  var tweet = document.getElementById('wlTweet').value.trim();
+  var result = document.getElementById('wlResult');
+
+  if (!wallet || !tweet) {
+    result.textContent = 'please fill in both your wallet address and tweet url.';
+    result.className = 'wl-msg no';
     return;
   }
 
-  var found = whitelist.some(function(addr) {
-    return addr.toLowerCase() === input;
+  if (!wallet.startsWith('0x') || wallet.length < 40) {
+    result.textContent = 'that does not look like a valid wallet address.';
+    result.className = 'wl-msg no';
+    return;
+  }
+
+  if (!tweet.includes('twitter.com') && !tweet.includes('x.com')) {
+    result.textContent = 'that does not look like a tweet url. paste the full link.';
+    result.className = 'wl-msg no';
+    return;
+  }
+
+  var list = getWhitelist();
+  var exists = list.some(function(e) {
+    return e.wallet.toLowerCase() === wallet.toLowerCase();
   });
 
-  if (found) {
-    result.textContent = "yes — you're on the list.";
-    result.className = "wl-msg yes";
+  if (exists) {
+    result.textContent = 'this wallet is already on the whitelist.';
+    result.className = 'wl-msg yes';
+    return;
+  }
+
+  list.push({
+    wallet: wallet,
+    tweet: tweet,
+    time: new Date().toISOString(),
+    status: 'pending'
+  });
+
+  saveWhitelist(list);
+  document.getElementById('wlWallet').value = '';
+  document.getElementById('wlTweet').value = '';
+  result.textContent = 'submitted. we will verify your tweet and confirm your spot. welcome to the list.';
+  result.className = 'wl-msg yes';
+  updateAdminPanel();
+}
+
+function checkMyStatus() {
+  var wallet = document.getElementById('wlWallet').value.trim();
+  var result = document.getElementById('wlResult');
+
+  if (!wallet) {
+    result.textContent = 'enter your wallet address first, then click check.';
+    result.className = 'wl-msg';
+    return;
+  }
+
+  var list = getWhitelist();
+  var found = list.filter(function(e) {
+    return e.wallet.toLowerCase() === wallet.toLowerCase();
+  });
+
+  if (found.length > 0) {
+    result.textContent = 'yes \u2014 you are on the whitelist. status: ' + found[0].status + '.';
+    result.className = 'wl-msg yes';
   } else {
-    result.textContent = "nope — not on the list. sorry.";
-    result.className = "wl-msg no";
+    result.textContent = 'not found. follow the steps above and submit your tweet.';
+    result.className = 'wl-msg no';
   }
 }
+
+// --- Admin Panel ---
+function showAdmin() {
+  var pw = prompt('admin password:');
+  if (pw === ADMIN_PASSWORD) {
+    document.getElementById('wlAdmin').style.display = 'block';
+    updateAdminPanel();
+  }
+}
+
+function updateAdminPanel() {
+  var list = getWhitelist();
+  document.getElementById('wlCount').textContent = list.length;
+}
+
+function exportWhitelist() {
+  var list = getWhitelist();
+  var pre = document.getElementById('wlExport');
+  pre.style.display = 'block';
+  pre.textContent = JSON.stringify(list, null, 2);
+}
+
+function clearWhitelist() {
+  if (confirm('delete ALL whitelist entries? this cannot be undone.')) {
+    localStorage.removeItem(WL_KEY);
+    updateAdminPanel();
+    document.getElementById('wlExport').style.display = 'none';
+    document.getElementById('wlExport').textContent = '';
+  }
+}
+
+// Show admin panel with secret key combo: press 'a' 5 times
+var aCount = 0;
+document.addEventListener('keydown', function(e) {
+  if (e.key === 'a' || e.key === 'A') {
+    aCount++;
+    if (aCount >= 5) {
+      aCount = 0;
+      showAdmin();
+    }
+  } else {
+    aCount = 0;
+  }
+});
+
+// Init admin panel on load
+updateAdminPanel();
 </script>
 
 </body>
