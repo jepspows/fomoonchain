@@ -323,16 +323,6 @@
   </div>
   <div class="wl-msg" id="wlResult"></div>
 
-  <div id="wlAdmin" style="display:none;margin-top:18px;border-top:1px dashed #ccc;padding-top:10px;">
-    <p class="body-heading" style="font-size:1.2rem;">admin panel</p>
-    <p style="font-size:0.8rem;opacity:0.6;margin-bottom:8px;">
-      <span id="wlCount">0</span> whitelist entries
-    </p>
-    <button class="wl-btn export-btn" onclick="exportWhitelist()">export as JSON</button>
-    <button class="wl-btn clear-btn" onclick="clearWhitelist()">clear all</button>
-    <pre id="wlExport" style="display:none;font-size:0.65rem;max-height:200px;overflow:auto;background:#f9f9f9;padding:8px;margin-top:8px;"></pre>
-  </div>
-
   <p class="body-heading">the plan:</p>
   <p class="body-text">
     <strong>phase 1 —</strong> kid draws 10,000 characters. no shortcuts. one marker. many snacks.<br>
@@ -445,19 +435,10 @@ function shuffleSneak() {
   }, 200);
 }
 
-// --- Whitelist Registration ---
-var WL_KEY = 'fomo_whitelist_v1';
-var ADMIN_PASSWORD = 'fomo420';
-
-function getWhitelist() {
-  try {
-    return JSON.parse(localStorage.getItem(WL_KEY)) || [];
-  } catch(e) { return []; }
-}
-
-function saveWhitelist(list) {
-  localStorage.setItem(WL_KEY, JSON.stringify(list));
-}
+// --- Whitelist Registration (Google Forms via iframe) ---
+var FORM_URL = 'https://docs.google.com/forms/d/e/1FAIpQLScKHyCAVPTTCrVym2K1bgo3YnAAdLmwfyMAcORDav00peeBgg/formResponse';
+var WALLET_FIELD = 'entry.1766366796';
+var TWEET_FIELD = 'entry.2086204674';
 
 function openTweet() {
   var text = encodeURIComponent(
@@ -492,102 +473,56 @@ function submitWhitelist() {
     return;
   }
 
-  var list = getWhitelist();
-  var exists = list.some(function(e) {
-    return e.wallet.toLowerCase() === wallet.toLowerCase();
-  });
+  var btn = document.querySelector('.submit-btn');
+  btn.textContent = 'submitting...';
+  btn.disabled = true;
 
-  if (exists) {
-    result.textContent = 'this wallet is already on the whitelist.';
-    result.className = 'wl-msg yes';
-    return;
-  }
+  // Create hidden iframe with form that submits to Google Forms
+  var iframe = document.createElement('iframe');
+  iframe.name = 'wl-iframe-' + Date.now();
+  iframe.style.display = 'none';
+  document.body.appendChild(iframe);
 
-  list.push({
-    wallet: wallet,
-    tweet: tweet,
-    time: new Date().toISOString(),
-    status: 'pending'
-  });
+  var form = document.createElement('form');
+  form.method = 'POST';
+  form.action = FORM_URL;
+  form.target = iframe.name;
 
-  saveWhitelist(list);
+  var w = document.createElement('input');
+  w.type = 'hidden';
+  w.name = WALLET_FIELD;
+  w.value = wallet;
+  form.appendChild(w);
+
+  var t = document.createElement('input');
+  t.type = 'hidden';
+  t.name = TWEET_FIELD;
+  t.value = tweet;
+  form.appendChild(t);
+
+  document.body.appendChild(form);
+  form.submit();
+
+  // Clean up after a short delay
+  setTimeout(function() {
+    document.body.removeChild(form);
+    document.body.removeChild(iframe);
+  }, 2000);
+
   document.getElementById('wlWallet').value = '';
   document.getElementById('wlTweet').value = '';
-  result.textContent = 'submitted. we will verify your tweet and confirm your spot. welcome to the list.';
+  result.textContent = 'submitted. we will review your tweet and confirm. welcome.';
   result.className = 'wl-msg yes';
-  updateAdminPanel();
+  btn.textContent = 'submit for whitelist';
+  btn.disabled = false;
 }
 
 function checkMyStatus() {
-  var wallet = document.getElementById('wlWallet').value.trim();
   var result = document.getElementById('wlResult');
-
-  if (!wallet) {
-    result.textContent = 'enter your wallet address first, then click check.';
-    result.className = 'wl-msg';
-    return;
-  }
-
-  var list = getWhitelist();
-  var found = list.filter(function(e) {
-    return e.wallet.toLowerCase() === wallet.toLowerCase();
-  });
-
-  if (found.length > 0) {
-    result.textContent = 'yes \u2014 you are on the whitelist. status: ' + found[0].status + '.';
-    result.className = 'wl-msg yes';
-  } else {
-    result.textContent = 'not found. follow the steps above and submit your tweet.';
-    result.className = 'wl-msg no';
-  }
+  result.textContent = 'all submissions are reviewed manually. if you submitted, you are in the queue. we verify every tweet.';
+  result.className = 'wl-msg yes';
 }
 
-// --- Admin Panel ---
-function showAdmin() {
-  var pw = prompt('admin password:');
-  if (pw === ADMIN_PASSWORD) {
-    document.getElementById('wlAdmin').style.display = 'block';
-    updateAdminPanel();
-  }
-}
-
-function updateAdminPanel() {
-  var list = getWhitelist();
-  document.getElementById('wlCount').textContent = list.length;
-}
-
-function exportWhitelist() {
-  var list = getWhitelist();
-  var pre = document.getElementById('wlExport');
-  pre.style.display = 'block';
-  pre.textContent = JSON.stringify(list, null, 2);
-}
-
-function clearWhitelist() {
-  if (confirm('delete ALL whitelist entries? this cannot be undone.')) {
-    localStorage.removeItem(WL_KEY);
-    updateAdminPanel();
-    document.getElementById('wlExport').style.display = 'none';
-    document.getElementById('wlExport').textContent = '';
-  }
-}
-
-// Show admin panel with secret key combo: press 'a' 5 times
-var aCount = 0;
-document.addEventListener('keydown', function(e) {
-  if (e.key === 'a' || e.key === 'A') {
-    aCount++;
-    if (aCount >= 5) {
-      aCount = 0;
-      showAdmin();
-    }
-  } else {
-    aCount = 0;
-  }
-});
-
-// Init admin panel on load
-updateAdminPanel();
 </script>
 
 </body>
