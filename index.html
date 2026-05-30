@@ -435,8 +435,8 @@ function shuffleSneak() {
   }, 200);
 }
 
-// --- Whitelist Registration (Google Forms via iframe) ---
-var FORM_URL = 'https://docs.google.com/forms/d/e/1FAIpQLScKHyCAVPTTCrVym2K1bgo3YnAAdLmwfyMAcORDav00peeBgg/formResponse';
+// --- Whitelist Registration (Google Forms pre-filled) ---
+var FORM_VIEW = 'https://docs.google.com/forms/d/e/1FAIpQLScKHyCAVPTTCrVym2K1bgo3YnAAdLmwfyMAcORDav00peeBgg/viewform';
 var WALLET_FIELD = 'entry.1766366796';
 var TWEET_FIELD = 'entry.2086204674';
 
@@ -474,48 +474,17 @@ function submitWhitelist() {
     return;
   }
 
-  var btn = document.querySelector('.submit-btn');
-  btn.textContent = 'submitting...';
-  btn.disabled = true;
+  // Open Google Form with pre-filled fields in new tab
+  var url = FORM_VIEW + '?usp=pp_url' +
+    '&' + WALLET_FIELD + '=' + encodeURIComponent(wallet) +
+    '&' + TWEET_FIELD + '=' + encodeURIComponent(tweet);
 
-  // Create hidden iframe with form that submits to Google Forms
-  var iframe = document.createElement('iframe');
-  iframe.name = 'wl-iframe-' + Date.now();
-  iframe.style.display = 'none';
-  document.body.appendChild(iframe);
-
-  var form = document.createElement('form');
-  form.method = 'POST';
-  form.action = FORM_URL;
-  form.target = iframe.name;
-
-  var w = document.createElement('input');
-  w.type = 'hidden';
-  w.name = WALLET_FIELD;
-  w.value = wallet;
-  form.appendChild(w);
-
-  var t = document.createElement('input');
-  t.type = 'hidden';
-  t.name = TWEET_FIELD;
-  t.value = tweet;
-  form.appendChild(t);
-
-  document.body.appendChild(form);
-  form.submit();
-
-  // Clean up after a short delay
-  setTimeout(function() {
-    document.body.removeChild(form);
-    document.body.removeChild(iframe);
-  }, 2000);
+  window.open(url, '_blank');
 
   document.getElementById('wlWallet').value = '';
   document.getElementById('wlTweet').value = '';
-  result.textContent = 'submitted. we will review your tweet and confirm. welcome.';
+  result.textContent = 'form opened in a new tab. click submit on the google form to complete.';
   result.className = 'wl-msg yes';
-  btn.textContent = 'submit for whitelist';
-  btn.disabled = false;
 }
 
 function checkMyStatus() {
